@@ -1,36 +1,56 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
-        <members>*</members>
+        <members>UT_BatchTrainingInvoice</members>
+        <members>UT_EventTriggerHandler</members>
+        <members>UT_ScheduleInvoiceBatch</members>
         <name>ApexClass</name>
     </types>
     <types>
-        <members>*</members>
-        <name>ApexComponent</name>
-    </types>
-    <types>
-        <members>*</members>
+        <members>UT_AttachmentPDF</members>
         <name>ApexPage</name>
     </types>
     <types>
-        <members>*</members>
-        <name>ApexTestSuite</name>
-    </types>
-    <types>
-        <members>*</members>
+        <members>UT_EventTrigger</members>
         <name>ApexTrigger</name>
     </types>
     <types>
-        <members>*</members>
-        <name>AuraDefinitionBundle</name>
+        <members>UT_Universal_Training</members>
+        <name>CustomApplication</name>
+    </types>
+    <types> 
+        <members>Activity.UT_Training_Fee__c</members>
+        <name>CustomField</name> 
+    </types> 
+    <types>
+        <members>UT_Simple_Invoice__c</members>
+        <name>CustomObject</name>
     </types>
     <types>
-        <members>*</members>
-        <name>LightningComponentBundle</name>
+        <members>UT_Simple_Invoice__c</members>
+        <name>CustomTab</name>
     </types>
     <types>
-        <members>*</members>
-        <name>StaticResource</name>
+        <members>unfiled$public/UT_Invoice_for_Training_Class</members>
+        <name>EmailTemplate</name>
+    </types>
+    <types>
+        <members>Event-Event Layout</members>
+        <members>UT_Simple_Invoice__c-Simple Invoice Layout</members>
+        <name>Layout</name>
+    </types>
+    <types>
+        <members>Admin</members>
+        <name>Profile</name>
+    </types>
+    <types>
+        <members>Activities</members>
+        <name>Settings</name>
+    </types>
+    <types> 
+        <members>EventSubject</members>
+        <members>EventType</members>
+        <name>StandardValueSet</name> 
     </types>
     <version>54.0</version>
 </Package>

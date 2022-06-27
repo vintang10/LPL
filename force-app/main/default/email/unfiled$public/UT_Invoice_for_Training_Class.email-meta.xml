@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Invoice for Training Class</name>
+    <pageDevName>Invoice_for_Training_Class</pageDevName>
+    <relatedEntityType>UT_Simple_Invoice__c</relatedEntityType>
+    <style>none</style>
+    <subject>Invoice for Training Class</subject>
+    <textOnly>Dear {{{Recipient.Name}}},
+
+Your training is going to start in 2 days! We are excited to have you.
+
+You will be taking training for {{{UT_Simple_Invoice__c.UT_Training_Received__c}}} on{{{UT_Simple_Invoice__c.UT_Training_Date__c}}}
+
+Please see the attached file for your invoice.
+
+You can make payment by calling the number below or clicking to our payment portal.
+
+768-111-1111
+
+Pay Now &lt; https://paypal.com &gt; 
+
+Thank you,
+
+Universal Training</textOnly>
+    <type>custom</type>
+    <uiType>SFX</uiType>
+</EmailTemplate>

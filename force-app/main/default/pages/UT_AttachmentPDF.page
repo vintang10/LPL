@@ -1,0 +1,26 @@
+<apex:page standardController="UT_Simple_Invoice__c" renderAs="PDF">
+    <h1>Training Class Invoice</h1>
+    <strong>Bill To:</strong>
+    <br/>
+    <p>
+        {!UT_Simple_Invoice__c.UT_Attendee__r.Name}<br/>
+        {!UT_Simple_Invoice__c.UT_Attendee__r.Email}<br/>
+        {!UT_Simple_Invoice__c.UT_Attendee__r.MailingStreet}<br/>
+        <apex:outputText rendered="{!UT_Simple_Invoice__c.UT_Attendee__r.MailingCity != null }" value="{!UT_Simple_Invoice__c.UT_Attendee__r.MailingCity},"/>
+        <apex:outputText rendered="{!UT_Simple_Invoice__c.UT_Attendee__r.MailingState != null }" value="{!UT_Simple_Invoice__c.UT_Attendee__r.MailingState},"/>
+        <apex:outputText rendered="{!UT_Simple_Invoice__c.UT_Attendee__r.MailingPostalCode != null }" value="{!UT_Simple_Invoice__c.UT_Attendee__r.MailingPostalCode}"/>
+    </p>
+    <apex:panelGrid columns="2">
+        <apex:outputLabel for="InvoiceNumber" value="Invoice #: "/>
+        <apex:outputText id="InvoiceNumber" value="{!UT_Simple_Invoice__c.Name}"/>
+        
+        <apex:outputLabel for="TrainingReceived" value="Training: "/>
+        <apex:outputText id="TrainingReceived" value="{!UT_Simple_Invoice__c.UT_Training_Received__c} on {!UT_Simple_Invoice__c.UT_Training_Date_Formatted__c}"/>
+        
+        <apex:outputLabel for="TotalAmountDue" value="Total Amount Due: "/>
+        <apex:outputText id="TotalAmountDue" value="{0, number, currency}">
+            <apex:param value="{!UT_Simple_Invoice__c.UT_Total_Amount_Due__c}"/>
+        </apex:outputText>
+
+    </apex:panelGrid>
+</apex:page>
