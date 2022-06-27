@@ -69,11 +69,21 @@ public class UT_EventTriggerHandler {
         /*********************************************/
         if (invoicesToDelete.size() > 0) delete invoicesToDelete;
         if (newAttendeeIdList.size() > 0) createInvoices(newAttendeeIdList, contactIdToEventMap);
+    }
+    
+    public static void afterDelete(List<Event> deletedEvents)
+    {
+        Set<Id> deletedEventIdList = new Set<Id>();
 
-        /* there's also a question for business rule for what should happen to invoices
-        /* if the event is deleted, but that's outside of this scope.
-        /* */
+        for (Event deletedEvent : deletedEvents) {
+            deletedEventIdList.add(deletedEvent.Id);
+        }
 
+        List<UT_Simple_Invoice__c> relatedInvoicesToDelete = [
+          SELECT Id FROM UT_Simple_Invoice__c WHERE UT_Related_Event_Id__c IN :deletedEventIdList
+        ];
+        
+        if (relatedInvoicesToDelete.size() > 0) delete relatedInvoicesToDelete;
     }
 
     /***************************************************************************/
