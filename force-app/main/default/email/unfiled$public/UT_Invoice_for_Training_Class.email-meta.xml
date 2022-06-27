@@ -11,7 +11,7 @@
 
 Your training is going to start in 2 days! We are excited to have you.
 
-You will be taking training for {{{UT_Simple_Invoice__c.UT_Training_Received__c}}} on {{{UT_Simple_Invoice__c.UT_Training_Date_Formatted__c}}}
+You will be taking training for {{{UT_Simple_Invoice__c.UT_Training_Received__c}}} on{{{UT_Simple_Invoice__c.UT_Training_Date__c}}}
 
 Please see the attached file for your invoice.
 

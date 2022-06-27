@@ -35,6 +35,10 @@
         <name>EmailTemplate</name>
     </types>
     <types>
+        <members>Home_Page_Default</members>
+        <name>FlexiPage</name>
+    </types>
+    <types>
         <members>Event-Event Layout</members>
         <members>UT_Simple_Invoice__c-Simple Invoice Layout</members>
         <name>Layout</name>
@@ -42,6 +46,10 @@
     <types>
         <members>Admin</members>
         <name>Profile</name>
+    </types>
+    <types>
+        <members>Public/UT_New_Events_with_Invitees_Report</members>
+        <name>Report</name>
     </types>
     <types>
         <members>Activities</members>
