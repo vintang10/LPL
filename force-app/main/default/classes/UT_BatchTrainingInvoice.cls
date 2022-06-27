@@ -11,7 +11,7 @@ public class UT_BatchTrainingInvoice implements Database.Batchable<sObject>, Dat
  
     public void execute(Database.BatchableContext bc, List<UT_Simple_Invoice__c> invoiceList)
     {
-        // get a date 2 days from today
+        // get date 2 days from today
         List<Id> eventsInTwoDays = new List<Id>();
         DateTime twoDaysDateTime = DateTime.now() + 2;
         Date twoDaysFromNowDate = Date.newinstance(

@@ -6,8 +6,8 @@
         {!UT_Simple_Invoice__c.UT_Attendee__r.Name}<br/>
         {!UT_Simple_Invoice__c.UT_Attendee__r.Email}<br/>
         {!UT_Simple_Invoice__c.UT_Attendee__r.MailingStreet}<br/>
-        <apex:outputText rendered="{!UT_Simple_Invoice__c.UT_Attendee__r.MailingCity != null }" value="{!UT_Simple_Invoice__c.UT_Attendee__r.MailingCity},"/>
-        <apex:outputText rendered="{!UT_Simple_Invoice__c.UT_Attendee__r.MailingState != null }" value="{!UT_Simple_Invoice__c.UT_Attendee__r.MailingState},"/>
+        <apex:outputText rendered="{!UT_Simple_Invoice__c.UT_Attendee__r.MailingCity != null }" value="{!UT_Simple_Invoice__c.UT_Attendee__r.MailingCity}, "/>
+        <apex:outputText rendered="{!UT_Simple_Invoice__c.UT_Attendee__r.MailingState != null }" value="{!UT_Simple_Invoice__c.UT_Attendee__r.MailingState} "/>
         <apex:outputText rendered="{!UT_Simple_Invoice__c.UT_Attendee__r.MailingPostalCode != null }" value="{!UT_Simple_Invoice__c.UT_Attendee__r.MailingPostalCode}"/>
     </p>
     <apex:panelGrid columns="2">
