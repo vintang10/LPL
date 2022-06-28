@@ -2,7 +2,7 @@ public class UT_EventTriggerHandler {
 
     public static void afterInsert(List<Event> newEvents)
     {
-        // Mapping Preparation
+        // mapping preparation
         Set<Id> eventIdList = new Set<Id>();
         Map<Id, Event> eventMap = new Map<Id, Event>();
 
@@ -28,49 +28,12 @@ public class UT_EventTriggerHandler {
         if (contactIdList.size() > 0) createInvoices(contactIdList, contactIdToEventMap);
     }
 
-    public static void afterUpdate(List<Event> updatedEvents)
+    public static void afterUpdate(List<Event> updatedEvents, List<Event> oldEvents)
     {
-        // Mapping Preparation
-        Set<Id> updatedEventIdList = new Set<Id>();
-        Map<Id, Event> eventMap = new Map<Id, Event>();
-
-        for (Event event : updatedEvents) {
-            updatedEventIdList.add(event.Id);
-            eventMap.put(event.Id, event);
-        }
-
-        Set<EventRelation> recentContactList = new Set<EventRelation>();
-        Set<UT_Simple_Invoice__c> oldContactList = new Set<UT_Simple_Invoice__c>();
-
-        Map<Id, Event> contactIdToEventMap = new Map<Id, Event>();
-
-        for (EventRelation eventRelation : [SELECT Relation.Id, EventId FROM EventRelation WHERE EventId IN :updatedEventIdList AND isInvitee = true]) {
-            String relationId = String.valueOf(eventRelation.Relation.Id);
-            if (relationId.startsWith('003')) {
-                recentContactList.add(eventRelation);
-                contactIdToEventMap.put(eventRelation.Relation.Id, eventMap.get(eventRelation.EventId));
-            }
-        }
-
-        for (UT_Simple_Invoice__c invoice : [SELECT Id, UT_Attendee__c FROM UT_Simple_Invoice__c WHERE UT_Related_Event_Id__c IN :updatedEventIdList]) {
-            oldContactList.add(invoice);
-        }
-
-        List<UT_Simple_Invoice__c> invoicesToDelete = getInvoicesToDelete(recentContactList, oldContactList);
-        Set<EventRelation> newAttendees = getAttendeesForNewInvoices(recentContactList, oldContactList);
-
-        Set<Id> newAttendeeIdList = new Set<Id>();
-        for (EventRelation eventRelation : newAttendees) {
-            newAttendeeIdList.add(eventRelation.Relation.Id);
-        }
-
-        /*********************************************/
-        /* updating event deletes & creates invoices */
-        /*********************************************/
-        if (invoicesToDelete.size() > 0) delete invoicesToDelete;
-        if (newAttendeeIdList.size() > 0) createInvoices(newAttendeeIdList, contactIdToEventMap);
+        updateRelatedInvoiceRecords(updatedEvents, oldEvents);
+        addRemoveInvoicesHandler(updatedEvents);
     }
-    
+
     public static void afterDelete(List<Event> deletedEvents)
     {
         Set<Id> deletedEventIdList = new Set<Id>();
@@ -147,5 +110,82 @@ public class UT_EventTriggerHandler {
             );
         }
         insert invoicesToCreate;
+    }
+
+    private static void updateRelatedInvoiceRecords(List<Event> updatedEvents, List<Event> oldEvents)
+    {
+        /*********************************************************************************************/
+        /* here we will update related invoices to reflect the new event time, in bulk consideration */
+        /*********************************************************************************************/
+        List<Id> updatedStartDateTimeIdList = new List<Id>();
+        Map<Id, Event> eventIdMap = new Map<Id, Event>();
+
+        for (Integer i = 0; i < updatedEvents.size(); i++) {
+            if (updatedEvents[i].StartDateTime != oldEvents[i].StartDateTime) {
+                updatedStartDateTimeIdList.add(updatedEvents[i].Id);
+                eventIdMap.put(updatedEvents[i].Id, updatedEvents[i]);
+            }
+        }
+
+        List<UT_Simple_Invoice__c> invoicesToUpdateList = new List<UT_Simple_Invoice__c>();
+        Map<Id, Event> invoiceIdToEvent = new Map<Id, Event>();
+
+        for (UT_Simple_Invoice__c invoice : [
+            SELECT Id, UT_Related_Event_Id__c FROM UT_Simple_Invoice__c WHERE UT_Related_Event_Id__c IN :updatedStartDateTimeIdList
+        ]) {
+            invoiceIdToEvent.put(invoice.Id, eventIdMap.get(invoice.UT_Related_Event_Id__c));
+            invoicesToUpdateList.add(invoice);
+        }
+
+        for (UT_Simple_Invoice__c inoviceToUpdate : invoicesToUpdateList) {
+            Event updatedEvent = invoiceIdToEvent.get(inoviceToUpdate.Id);
+            inoviceToUpdate.UT_Start_Date_Time__c = updatedEvent.startDateTime;
+            inoviceToUpdate.UT_Training_Date_Formatted__c = updatedEvent.startDateTime.format();
+        }
+
+        if (invoicesToUpdateList.size() > 0) update invoicesToUpdateList;
+    }
+
+    private static void addRemoveInvoicesHandler(List<Event> updatedEvents)
+    {
+        // mapping preparation to handle invoice creation and deletion
+        Set<Id> updatedEventIdList = new Set<Id>();
+        Map<Id, Event> eventMap = new Map<Id, Event>();
+
+        for (Event event : updatedEvents) {
+            updatedEventIdList.add(event.Id);
+            eventMap.put(event.Id, event);
+        }
+
+        Set<EventRelation> recentContactList = new Set<EventRelation>();
+        Set<UT_Simple_Invoice__c> oldContactList = new Set<UT_Simple_Invoice__c>();
+
+        Map<Id, Event> contactIdToEventMap = new Map<Id, Event>();
+
+        for (EventRelation eventRelation : [SELECT Relation.Id, EventId FROM EventRelation WHERE EventId IN :updatedEventIdList AND isInvitee = true]) {
+            String relationId = String.valueOf(eventRelation.Relation.Id);
+            if (relationId.startsWith('003')) {
+                recentContactList.add(eventRelation);
+                contactIdToEventMap.put(eventRelation.Relation.Id, eventMap.get(eventRelation.EventId));
+            }
+        }
+
+        for (UT_Simple_Invoice__c invoice : [SELECT Id, UT_Attendee__c FROM UT_Simple_Invoice__c WHERE UT_Related_Event_Id__c IN :updatedEventIdList]) {
+            oldContactList.add(invoice);
+        }
+
+        List<UT_Simple_Invoice__c> invoicesToDelete = getInvoicesToDelete(recentContactList, oldContactList);
+        Set<EventRelation> newAttendees = getAttendeesForNewInvoices(recentContactList, oldContactList);
+
+        Set<Id> newAttendeeIdList = new Set<Id>();
+        for (EventRelation eventRelation : newAttendees) {
+            newAttendeeIdList.add(eventRelation.Relation.Id);
+        }
+
+        /*********************************************/
+        /* updating event deletes & creates invoices */
+        /*********************************************/
+        if (invoicesToDelete.size() > 0) delete invoicesToDelete;
+        if (newAttendeeIdList.size() > 0) createInvoices(newAttendeeIdList, contactIdToEventMap);
     }
 }
